@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+    <link type="image/ico" rel="shortcut icon" href="//resources.esri.com/favicon.ico">
+    <link type="image/ico" rel="icon"  href="//resources.esri.com/favicon.ico">
+
+    <!--
+        To correctly reference your Map Journal in search engine:
+         - create and fill out extensively an ArcGIS Online item that link to your final application
+         - edit the following four tags as well as the title tag above on line 4
+    -->
+    <meta name="description" content="This story map was created with the Esri Tpl application in ArcGIS Online.">
+
+    <!-- Facebook sharing -->
+    <meta property="og:type" content="article"/>
+    <meta property="og:title" content="Story Map Journal"/>
+    <meta property="og:description" content="This story map was created with the Story Map Journal application in ArcGIS Online."/>
+    <meta property="og:image" content="resources/common/icons/esri-globe.png"/>
+
+    <!--
+        This application is released under the Apache License V2.0 by Esri http://www.esri.com/
+        Checkout the project repository on GitHub to access source code, latest revision, developer documentation, FAQ and tips
+        https://github.com/Esri/map-journal-storytelling-template-js
+    -->
+
+    <script type="text/javascript">
+        //-------------------------------------------------------------------------------------------
+        //     Application configuration (ignored on ArcGIS Online, Portal and during development)
+        //-------------------------------------------------------------------------------------------
+        var configOptions = {
+            // Enter an application ID created through the Map Journal builder
+            appid: "",
+            // Optionally to secure Journal's access, use an OAuth application ID (example: 6gyOg377fLUhUk6f)
+            // User will need to sign-in to access the viewer even if your application is public
+            oAuthAppId: "",
+            // Optionally to be able to use the appid URL parameter, configure here the list of application author
+            //  whose application are allowed to be viewed by this Map Journal deployment
+            // This is the Portal username of the Journal owner (e.g. ["user1"], ["user1", "user2"])
+            authorizedOwners: [""]
+        };
+        // Optionally sharing and proxy URLs can be configured in app/tpl-config.js. This is only required
+        //  when the webmap is not hosted on ArcGIS Online or a Portal for ArcGIS instance and the application isn't deployed as /home/MapJournal/ or /apps/MapJournal/.
+        // Optionally Bing Maps key, Geometry and Geocode service's URLs can be configured in app/commonConfig.js. This is only required
+        //  if the Organization or Portal for ArcGIS instance default configuration has to be overwritten. If the application is deployed
+        //  on Portal for ArcGIS as /home/MapJournal/ or /apps/MapJournal/, that configuration is available in ../commonConfig.js
+    </script>
+
+    <!--
+
+        Edit below at your own risk
+
+    -->
+
+    <script type="text/javascript">
+        var app = {
+            version: '1.3.0',
+            pathJSAPI: '//js.arcgis.com/3.15/'
+        }; 
+    </script>
+</head>
+<body class="claro">
+<style>
+    /* CUSTOM CSS RULES */
+
+    .esriLayer{
+        /*background-color: #0b0b0b;*/
+        /*color: #fff;*/
+        /*font-family: "Arial";*/
+    }
+
+    .esriLayerList .esriList{
+        border-top:none;
+    }
+
+    .esriLayerList .esriTitle {
+        /*background-color: #0b0b0b;*/
+        border-bottom:none;
+    }
+
+    .esriLayerList .esriList ul{
+        /*background-color: #0b0b0b;*/
+    }
+
+    .esriLayerList .esriTabMenu .esriTabMenuItem {
+        /*background-color: #0b0b0b;*/
+        /*color: #fff;*/
+    }
+
+    .esriLayerList .esriTabSelected {
+        display: block;
+        padding: 0 10px;
+        /*color: #ffffff*/
+    }
+
+    #bottomPanel {
+        left: 50%;
+        margin: 0 auto;
+        /*margin-left: 300px;*/
+        position: absolute;
+        bottom: 2.5em;
+    }
+
+    #timeSliderPane{
+        width:10%;
+        z-index:100;
+        position: absolute;
+        top:0;
+        right:0;
+    }
+
+    #timeInfo{
+        color: #000;
+        border-radius: 4px;
+        border: solid 2px #fff;
+        background-color: #ffffff;
+        display: block;
+        padding: 5px;
+        position: relative;
+        text-align: center;
+        /*width: 550px;*/
+        width: 75%;
+        z-index: 99;
+    }
+
+    .search{
+        padding: 8px 15px;
+        background: rgba(50, 50, 50, 0.2);
+        border: 0px solid #dbdbdb;
+    }
+
+    .layerListContainer{
+        height: 40px;
+        /*width: 127px;*/
+        width: 20%;
+        top: 0;
+        right: 0;
+        z-index: 101;
+        position: absolute;
+        padding: 6px 6px 6px 6px;
+        /*border: 2px solid #000909;*/
+        /*background-color: rgba(3, 10, 16, 0.53);*/
+        /*color: #fafafa;*/
+    }
+
+    .layerListContainer div{
+        width: 100%;
+    }
+    .layerListContainer .layerListHeader{
+        /*background-color: black;*/
+        padding: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        /*font-family: Arial;*/
+    }
+    .layerListContainer .layerListContent{
+        display: none;
+        padding: 5px;
+    }
+    #layerListPane{
+        /*width: 275px;*/
+        /*width: 15%;*/
+        z-index: 100;
+        position: absolute;
+        top: 33px;
+        right: 0;
+    }
+    #layersBtn{
+        background-color: black;
+        border-color: black;
+        float: right;
+    }
+    #layersBtn:hover{
+        background-color: dimgrey;
+    }
+    .esriLayerList .esriTitleContainer {
+        margin: 0px 11px 0px 0px;
+    }
+    .dijitTextBox{
+        width: 100%;
+    }
+    /*#searchWidget {*/
+        /*display: block;*/
+        /*position: absolute;*/
+        /*z-index: 999;*/
+        /*top: 20px;*/
+        /*left: 500px;*/
+    /*}*/
+
+</style>
+
+<!-- Builder top panel is injected here -->
+<div id="builderPanel" class="hide mainViewAboveMap"></div>
+
+<!-- Content -->
+<div id="contentPanel" class="mobileView">
+    <table class="containerPanelInner">
+        <tr>
+            <!-- Text panel of the Side Panel layout -->
+            <td id="sidePanel">
+                <div id="sidePanelInner" class="mainViewSideMap sidePanel sectionPanel">
+                    <div class="navDots vertical">
+                        <!-- navigation dots -->
+                    </div>
+                    <div class="header" aria-hidden="true">
+                        <div>
+                            <input id="searchBox" placeholder="Search for section" style="width: 398px;">
+                        </div>
+                        <div class="linkSocialContainer">
+                            <span class="linkContainer"></span>
+									<span class="shareBtns">
+										<i class="shareIcon blackHover share_facebook icon-facebook-squared" title="Share on Facebook" tabindex="-1"></i>
+										<i class="shareIcon blackHover share_twitter icon-twitter" title="Share on Twitter" tabindex="-1"></i>
+										<i class="shareIcon blackHover share_bitly icon-link" title="Share a short link" tabindex="-1"></i>
+										<button type="button" class="switchBuilder btn btn-xs btn-primary" tabindex="-1"></button>
+									</span>
+                        </div>
+                        <table class="logoContainer" style="display: none;">
+                            <tr>
+                                <td class="logoWrapper">
+                                    <a class="logoLink" target="_blank" tabindex="-1">
+                                        <img class="logoImg"/>
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="appTitle" tabindex="-1" aria-hidden="true"></div>
+                    <div class="separator"></div>
+                    <div class="sectionsWrapper">
+                        <div class="panelEditBtn">
+                            <div class="panelEditBtnInner"></div>
+                        </div>
+                        <div class="sections">
+                            <!-- sections injected here -->
+                        </div>
+                    </div>
+                    <div class="builder builder-content-panel">
+                        <div class="builder-content-panel-group builder-add">
+                            <div class="builder-btn"></div>
+                            <div class="builder-lbl"></div>
+                        </div>
+                        <div class="builder-content-panel-group builder-organize">
+                            <div class="builder-btn"></div>
+                            <div class="builder-lbl"></div>
+                        </div>
+                    </div>
+                    <!-- <div class="resizer"></div> -->
+                    <div class="scroll">
+                        <div class="scrollInner" data-toggle="tooltip"></div>
+                    </div>
+                    <div class="builder-mask"></div>
+                    <div class="firstAddExplain"></div>
+                </div>
+            </td>
+            <!-- Map -->
+            <td id="mainStagePanel">
+                <div id="mainStagePanelInner">
+                    <div class="medias">
+                        <!-- Maps and media injected here -->
+                    </div>
+                    <div id="mainStageLoadingIndicator" class="loadingIndicator">
+                        <div class="load-indicator icon-spin1 animate-spin"></div>
+                        <script>
+                            // Alternate loader on IE and FF
+                            if (navigator.userAgent.indexOf('MSIE') !== -1
+                                    || navigator.appVersion.indexOf('Trident/') > 0
+                                    || navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                                document.write('\
+											<style>\
+										 		.load-indicator { display: none; }\
+										 		.loadingIndicator { opacity: 1.0; margin-top: -60px; margin-left: -32px; }\
+										 	</style>\
+										    <img src="resources/tpl/viewer/icons/loading-light.gif" />');
+                            }
+                        </script>
+                    </div>
+                    <!-- Back button -->
+                    <div class="mediaBackContainer">
+                        <div class="backButton">
+                            <div class="backArrow"></div>
+                            <span class="backLbl"></span>
+                        </div>
+                    </div>
+                    <!-- Builder -->
+                    <div id="builderQuotes" class="centerAlignOnFloat"></div>
+                    <div id="builderLanding" class="centerAlignOnFloat"></div>
+                    <div id="builderHelp" class="centerAlignOnFloat"></div>
+                    <div class="firstAddExplain"></div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- /Content -->
+
+<div id="floatingPanel" class="floatingPanel sectionPanel">
+    <div class="backdrop"></div>
+    <div class="header" aria-hidden="true">
+        <div class="linkSocialContainer">
+            <span class="linkContainer"></span>
+					<span class="shareBtns">
+						<i class="shareIcon blackHover share_facebook icon-facebook-squared" title="Share on Facebook" tabindex="-1"></i>
+						<i class="shareIcon blackHover share_twitter icon-twitter" title="Share on Twitter" tabindex="-1"></i>
+						<i class="shareIcon blackHover share_bitly icon-link" title="Share a short link" tabindex="-1"></i>
+						<button type="button" class="switchBuilder btn btn-xs btn-primary" tabindex="-1"></button>
+					</span>
+        </div>
+        <table class="logoContainer">
+            <tr>
+                <td class="logoWrapper">
+                    <a class="logoLink" target="_blank" tabindex="-1">
+                        <img class="logoImg"/>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="appTitle" tabindex="-1" aria-hidden="true"></div>
+    <div class="separator"></div>
+    <div class="panelEditBtn">
+        <div class="panelEditBtnInner"></div>
+    </div>
+    <div class="sections">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <!-- sections injected here -->
+            </div>
+        </div>
+    </div>
+    <div class="builder builder-content-panel">
+        <div class="builder-content-panel-group builder-add">
+            <div class="builder-btn"></div>
+            <div class="builder-lbl"></div>
+        </div>
+        <div class="builder-content-panel-group builder-organize">
+            <div class="builder-btn"></div>
+            <div class="builder-lbl"></div>
+        </div>
+    </div>
+    <div class="navDots vertical">
+        <!-- navigation dots -->
+    </div>
+    <div class="scroll">
+        <div class="scrollInner" data-toggle="tooltip"></div>
+    </div>
+    <div class="builder-mask"></div>
+    <div class="firstAddExplain"></div>
+</div>
+
+<!-- Mobile -->
+<div id="mobileView" class="floatingSwiper">
+    <div class="swiper-container">
+        <div class="backdrop"></div>
+        <div class="embed-btn-container embed-btn-left">
+            <div class="embed-btn"></div>
+        </div>
+        <div class="swiper-wrapper">
+            <!-- sections injected here -->
+        </div>
+        <div class="embed-btn-container embed-btn-right">
+            <div class="embed-btn"></div>
+        </div>
+    </div>
+    <div class="header">
+        <div class="backdrop"></div>
+        <div class="linkSocialContainer">
+            <span class="linkContainer"></span>
+					<span class="shareBtns">
+						<i class="shareIcon share_facebook icon-facebook-squared"></i>
+						<i class="shareIcon share_twitter icon-twitter"></i>
+						<i class="shareIcon share_bitly icon-link"></i>
+					</span>
+        </div>
+    </div>
+</div>
+
+
+<!-- Loading -->
+<style>
+    #loadingOverlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1100;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #E5E5E5;
+        -webkit-box-shadow: inset 0px 0px 82px 19px rgba(0,0,0,0.3);
+        -moz-box-shadow: inset 0px 0px 82px 19px rgba(0,0,0,0.3);
+        box-shadow: inset 0px 0px 82px 19px rgba(0,0,0,0.3);
+    }
+
+    @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+    @-moz-keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+    @-webkit-keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+    @-ms-keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+    @-o-keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+    @keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
+    @-moz-keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
+    @-webkit-keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
+    @-ms-keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
+    @-o-keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
+
+    #loadingOverlay.fadeOut {
+        -webkit-animation: fadeout 1.1s;
+        -moz-animation: fadeout 1.1s;
+        -ms-animation: fadeout 1.1s;
+        -o-animation: fadeout 1.1s;
+        animation: fadeout 1.1s;
+        -webkit-animation-fill-mode:forwards;
+        -moz-animation-fill-mode:forwards;
+        animation-fill-mode:forwards;
+    }
+
+    #loadingIndicator {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        z-index: 1101;
+    }
+
+    .loadingIndicator {
+        margin-left: -17px;
+        margin-top: -20px;
+    }
+</style>
+
+<div id="loadingOverlay"></div>
+<div id="loadingIndicator" class="loadingIndicator">
+    <img src="resources/tpl/viewer/icons/loading-light2.gif" />
+</div>
+<div id="loadingMessage"></div>
+
+
+
+
+
+<!-- Share dialog -->
+<div class="modal fade shareDialog" id="shareDialog" role="dialog" data-backdrop="static" tabindex="-1"></div>
+
+<!-- Builder views are injected here -->
+<div id="builder-views"></div>
+
+<!-- Fatal error box -->
+<div id="fatalError">
+    <table border="0">
+        <tr>
+            <td width="70px" align="center" id="fatalError-icon"></td>
+            <td id="fatalError-msg">
+                <b class="error-title"></b>
+                <p class="error-msg"></p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Custom AutoMapStory Logic -->
+<!--<link rel="stylesheet" href="https://js.arcgis.com/3.16/dijit/themes/claro/claro.css">-->
+<script type="text/javascript" src="app/jquery-1.12.3.min.js"></script>
+<script src="app/bootstrap.min.js"></script>
+<link rel="stylesheet" href="app/bootstrap.min.css">
+<script type="text/javascript" src="app/main-config.js"></script>
+<script type="text/javascript">
+    var layerListWidget = null;
+    var searchBoxFilter = null;
+    var mapTimeEnabled = false;
+    var timeSlider = null;
+    var timeExtent = null;
+    var startTime = null;
+    var endTime = null;
+    var timeCount = null;
+    // Create an array container for layers to be pushed into
+    var layers = [];
+
+    require(["dojo/topic",
+        "esri/layers/FeatureLayer",
+        "esri/InfoTemplate",
+        "esri/dijit/BasemapGallery",
+        "esri/dijit/Search",
+        "esri/dijit/LayerList",
+        "esri/TimeExtent",
+        "esri/dijit/TimeSlider",
+        "dijit/registry",
+        "dojo/dom-construct",
+        "dojo/_base/array",
+        "dojo/_base/lang",
+        "dojo/on",
+        "dojo/dom",
+        "dojo/store/Memory",
+        "dijit/form/FilteringSelect",
+        "dojo/domReady!"
+    ], function(topic,
+                FeatureLayer,
+                InfoTemplate,
+                BasemapGallery,
+                Search,
+                LayerList,
+                TimeExtent,
+                TimeSlider,
+                registry,
+                domConstruct,
+                array,
+                lang,
+                on,
+                dom,
+                Memory,
+                FilteringSelect) {
+        /*
+         * Custom Javascript to be executed while the application is initializing goes here
+         */
+        
+        // The application is ready
+        topic.subscribe("tpl-ready", function(){
+            /*
+             * Custom Javascript to be executed when the application is ready goes here
+             */
+
+//            // Test function to solve for touch device double-click bug
+//            $('a').on('click touchend', function(e) {
+//                var el = $(this);
+//                var link = el.attr('href');
+//                window.location = link;
+//            });
+            
+            // Logic for searchBar intellisense using dojo's FilteringSelect
+            searchBoxFilter = new FilteringSelect({
+                id: "searchBox",
+                name: "searchBox",
+                placeHolder: "Search for Section",
+                value: "",
+                store: new Memory({data: []}),
+                searchAttr: "name"
+            }, "searchBox");
+            searchBoxFilter.startup();
+
+            // Event listener for searchBoxFilter changes - uses topic.publish's "story-navigate-section"
+            on(searchBoxFilter, "change", lang.hitch(this, function(evt){
+                console.log(searchBoxFilter.value);
+                console.log(searchBoxFilter.displayedValue);
+                // Change the section using the searchBoxFilter's value (ID!)
+                if (searchBoxFilter.value !== ""){
+                   topic.publish("story-navigate-section", searchBoxFilter.value); 
+                }
+            }));
+
+            // Get section ID from the url for the section (it might not exist)
+            var section = getUrlVar('section');
+            // Run filterSections using the section value
+            var filteredBySection = filterSections(section, true);
+
+            // If the result of filterSections using subgroups is false
+            if (!filteredBySection) {
+                // Try to use the group url parameter (it might not exist)
+                var group = getUrlVar('group');
+                // run filterSections using group
+                // Note: If no group is passed, filterSections still operates and provides all sections to the
+                // searchBoxFilter store memory
+                filterSections(group, false);
+            }
+        });
+
+        // When a section is being loaded (don't wait for the Main Stage media to be loaded)
+        topic.subscribe("story-load-section", function(index){
+            console.log("The section", index, "is being loaded");
+            // Destroy layerList widget if it exists
+//            if(layerListWidget) {
+//                layerListWidget.destroyRecursive(false);
+//            }
+            // Destroy timeSlider widget if it exists
+//            if(timeSlider) {
+//                timeSlider.destroy();
+//            }
+            // Destroy timeInfo element using jQuery if it exists during change of section
+            if($('#timeInfo').length != 0) {
+                $('#timeInfo').remove();
+            }
+        });
+
+        topic.subscribe("story-loaded-map", function(result) {
+            console.log("Story loaded map has kicked off.");
+            // [SP] Definition Query Logic
+            // query the section to get the html with the title
+            var cur_section = app.data.getCurrentSection();
+            // query the section array to get the title html
+            var title_html = cur_section.title;
+            // Reference getTitle function to parse section title string from html
+            var title = getTitle(title_html);
+            console.log("Now performing query based on current section with title", title);
+
+            // Set null check for lack of map
+            if(cur_section.media.webmap) {
+                console.log("Section has a webmap.");
+
+                // [SP] Insert needed divs in the DOM
+
+                // Insert layerList div within the layerListPane div (since it was destroyed)
+                var listElement = domConstruct.toDom('<div id="layerList" class="collapse"></div>');
+                domConstruct.place(listElement, "layerListPane");
+
+                // Define layer dictionary to define each layer' properties
+                var layer_dict;
+                layer_dict = {
+                    'Sections Mask': {
+                        dataServiceFormat: 'MapService',
+                        // Query for sections mask needs to check for the title page in order to disable
+                        query: title === "Section Title" ? "1=2" : "section_name <> '"+title+"'",
+                        timeEnabled: false
+                    },
+                    'Sample Layer 1': {
+                        dataServiceFormat: 'MapService',
+                        query: "1=1",
+                        timeEnabled: true
+                    },
+                    'Sample Layer 2': {
+                        dataServiceFormat: 'MapService',
+                        query: "1=1",
+                        timeEnabled: true
+                    },
+                    'Sample Layer 3': {
+                        dataServiceFormat: 'MapService',
+                        query: "1=1",
+                        timeEnabled: true
+                    }
+                };
+
+//                // If we need to push a subkey to the dynamicLayerNames array...
+//                var dynamicLayerNames = [];
+//                for (var key in layer_dict) {
+//                    if (layer_dict.hasOwnProperty(key)) {
+//                        dynamicLayerNames.push(layer_dict[key]['name']);
+//                    }
+//                }
+
+//                // If we need to find all the dynamicLayerNames
+//                var dynamicLayerNames;
+//                dynamicLayerNames = Object.keys(layer_dict);
+
+                // Query the app's mapConfig for the loaded operationalLayers
+                var opLayers = app.mapConfig.response.itemInfo.itemData.operationalLayers;
+
+                // Reset the layers array
+                layers = [];
+
+                // Loop through all the opLayers
+                array.forEach(opLayers, lang.hitch(this, function(opLayer){
+                    console.log(opLayer);
+
+                    // Query the layer_dict object for the current opLayer based on title
+                    var layerinfo = layer_dict[opLayer.title];
+//                    var dynamicLayer = opLayer.layerObject;
+                    if (layerinfo) {
+                        // Logic to determine which kind of query to perform
+                        if (layerinfo.dataServiceFormat === "FeatureService"){
+                            opLayer.layerObject.setDefinitionExpression(layerinfo.query);
+                        } else if (layerinfo.dataServiceFormat === "MapService") {
+                            opLayer.layerObject.setLayerDefinitions([layerinfo.query]);
+                        } else {
+                            console.error("The layer passed " + opLayer.title +
+                                    " was not a feature service nor a map service.");
+                        }
+
+                        // Logic to determine if a timeSlider should be activated
+                        if (layerinfo.timeEnabled === true && opLayer.visibility === true) {
+                            initSlider("bottomPanel", "timeInfo", "timeSlider");
+                        }
+                    }
+
+                    // push the current opLayer and relevant properties to the empty layers array
+                    layers.push({"layer":opLayer.layerObject,
+                        "title":opLayer.title,
+                        "visibility":opLayer.visibility,
+                        "showSubLayers":false,
+                        "timeEnabled": layerinfo ? layerinfo.timeEnabled : false  // Checks if the layer is in the layer_dict
+                    });
+
+                }));
+
+//                // [SP] Search Widget logic
+//
+//                var search = new Search({
+//                    enableButtonMode: false, //this enables the search widget to display as a single button
+//                    enableLabel: false,
+//                    enableInfoWindow: true,
+//                    showInfoWindowOnSelect: false,
+//                    enableSearchingAll: false,
+//                    enableHighlight: true,
+//                    map: app.mapConfig.response.map
+//                }, "searchWidget");
+//
+//                var sources = search.get("sources");
+//
+//                sources.push({
+//                    featureLayer: new FeatureLayer("https://path.to.ags.url.com/arcgis/rest/services/FeatureServer/0"),
+//                    searchFields: ["section_name"],
+//                    displayField: "section_name",
+//                    exactMatch: false,
+//                    name: "Sections",
+//                    outFields: ["*"],
+//                    placeholder: "Ex: Section Name",
+//                    maxResults: 6,
+//                    maxSuggestions: 6,
+//
+//                    //Create an InfoTemplate
+//                    infoTemplate: new InfoTemplate("section Information", "Name: ${section_name}</br>Group: ${group}"),
+//
+//                    enableSuggestions: true,
+//                    minCharacters: 0
+//                });
+//
+//                sources.push({
+//                    featureLayer: new FeatureLayer("https://path.to.ags.url.com/arcgis/rest/services/FeatureServer/0"),
+//                    searchFields: ["name"],
+//                    displayField: "name",
+//                    exactMatch: false,
+//                    outFields: ["did", "name"],
+//                    name: "Points",
+//                    placeholder: "Ex: Point Name",
+//                    maxResults: 6,
+//                    maxSuggestions: 6,
+//
+//                    //Create an InfoTemplate and include three fields
+//                    infoTemplate: new InfoTemplate("Point", "ID: ${id}</br>Name: ${name}</br>Group: ${group}"),
+//                    enableSuggestions: true,
+//                    minCharacters: 0
+//                });
+//
+//                //Set the sources above to the search widget
+//                search.set("sources", sources);
+//
+//                search.startup();
+//
+//                // Event Listener for selection to use the selected result to change the section accordingly
+//                on(search, 'select-result', function(e){
+//                    console.log('selected result', e.result.name)
+//                });
+
+                // [SP] Basemap Widget logic
+                // Determine if a layerList widget exists and destroy it
+                if (registry.byId("basemapGallery")){
+                    var prevBasemapGallery = registry.byId("basemapGallery");
+                    prevBasemapGallery.destroyRecursive(false);
+                }
+
+                // Insert basemapElement div within the basemapElementHolder div (since it was destroyed)
+                var basemapElement = domConstruct.toDom('<div id="basemapGallery"></div>');
+                domConstruct.place(basemapElement, "basemapGalleryHolder");
+
+                // add the basemap gallery by instantiating a BasemapGallery object
+                var basemapGallery = new BasemapGallery({
+                    showArcGISBasemaps: true,
+                    map: app.mapConfig.response.map
+                }, "basemapGallery");
+                basemapGallery.startup();
+
+                basemapGallery.on("error", function(msg) {
+                    console.log("basemap gallery error:  ", msg);
+                });
+
+
+                // [SP] LayerList Widget section
+                // Determine if a layerList widget exists and destroy it
+                if (registry.byId("layerList")){
+                    var prevLayerListWidget = registry.byId("layerList");
+                    prevLayerListWidget.destroyRecursive(false);
+                }
+
+                // Set up the layerList widget
+                layerListWidget = new LayerList({
+                    map: app.mapConfig.response.map,
+                    showLegend: true,
+                    showSubLayers: false,
+                    showOpacitySlider: true,
+                    removeUnderscores: true,
+                    layers: layers
+                }, "layerList");
+                layerListWidget.startup();
+
+                on(layerListWidget, 'toggle', function(evt){
+                    {
+                        // Insert toggle logic here!
+                        console.log("toggle event!");
+                        // Check which layer it was based on the event's layerIndex property
+                        var toggledLayer = layers[evt.layerIndex];
+                        // Check if the layer_dict contains the toggled layer
+                        if (layer_dict[toggledLayer.title]) {
+                            // Query the layers_dict for the event layer
+                            var toggledLayerInfo = layer_dict[toggledLayer.title];
+                            // Check if the toggled layer is time-enabled and currently visible
+                            if (toggledLayerInfo.timeEnabled && evt.visible) {
+                                // Initialize a new timeSlider
+                                initSlider("bottomPanel", "timeInfo", "timeSlider");
+                            } else if (toggledLayerInfo.timeEnabled && evt.visible === false) {
+                                // Declare flag variable that will establish if the timeSlider will be turned off
+                                var sliderOff = true;
+                                // Loop through the layers array and check if any are visible and timeEnabled
+                                array.forEach(layers, lang.hitch(this, function(layer){
+                                    // Check if the layer is time-enabled and remains visible
+                                    if (layer.visibility && layer.timeEnabled){
+                                        sliderOff = false;
+                                    }
+//                                    sliderOff = layer.visibility && layer.timeEnabled ? false : true;
+                                }));
+
+                                // Check if the map does not contain a remaining visible time-enabled layer
+                                if (sliderOff) {
+                                    // If so, destroy the timeSlider widget
+                                    var timeSliderWidget = registry.byId("timeSlider");
+                                    timeSliderWidget.destroyRecursive(false);
+                                    // Destroy the DOM elements that would hold the timeSlider and timeInfo
+                                    domConstruct.destroy("timeInfo");
+                                    domConstruct.destroy("timeSlider");
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else{
+                console.log("Section DOES NOT have a webmap.");
+            }
+
+        });
+
+
+        // Function to handle generation and logic for the timeSlider widget
+        function initSlider (parentDomElementID, timeInfoElementID, timeSliderElementID) {
+            // Determine if a pre-existing timeInfoElement does not exist
+            if (!document.getElementById(timeInfoElementID)) {
+
+                // Construct the holding timeInfo DOM element
+                var timeInfoString =
+                        '<div id="' + timeInfoElementID + '">' +
+                        '<div>Map Temporal Extent: <span id="daterange"></span></div>' +
+                        '</div>';
+                // Insert timeInfo element in DOM within the map div
+                var timeInfoElement = domConstruct.toDom(timeInfoString);
+                domConstruct.place(timeInfoElement, parentDomElementID);
+            }
+
+            // Determine if a timeSlider widget already exists in the dojo registry
+            // (ensures that the new timeSlider widget does not conflict an existing dojo registry id)
+            var timeSliderWidget = registry.byId(timeSliderElementID);
+            if (timeSliderWidget) {
+                // Destroy the timeSlider widget
+                timeSliderWidget.destroyRecursive(false);
+            }
+
+            // Construct the timeSlider DOM element
+            var timeElement = domConstruct.toDom('<div id="'+timeSliderElementID+'"></div>');
+            domConstruct.place(timeElement, timeInfoElementID);
+
+            // Instantiate a new TimeSlider object
+            var timeSlider = new TimeSlider({
+                loop: true,
+                style: "width: 100%;"
+            }, dom.byId(timeSliderElementID));
+            // Use the map object to start up the widget
+            app.mapConfig.response.map.setTimeSlider(timeSlider);
+
+            // Instantiate a new TimeExtent object
+            var timeExtent = new TimeExtent();
+            // Establish the timeExtent's start and end times
+            timeExtent.startTime = new Date("8/27/1986 UTC");
+            timeExtent.endTime = new Date("1/1/2050 UTC");
+            // Establish the timeSlider's thumbcount property using the setThumbCount method
+            timeSlider.setThumbCount(2);
+            // Establish the timeSlider's timeStops property using the createTimeStopsByTimeInterval method
+            timeSlider.createTimeStopsByTimeInterval(timeExtent, 1, "esriTimeUnitsMonths");
+            timeSlider.setThumbIndexes([0, 1]);
+            timeSlider.setThumbMovingRate(1500);
+            timeSlider.startup();
+
+            // Add labels for every other time stop
+            var labels = array.map(timeSlider.timeStops, function(timeStop, i){
+                if ( i % 2 === 0 ) {
+//                    return timeStop.getUTCMonth();
+                    return getMonthName(timeStop.getUTCMonth());
+                } else {
+                    return "";
+                }
+            });
+            // Set the labels on the time Slider
+//            timeSlider.setLabels(labels);
+
+            // *** Logic for timeSlider dynamic title - using only the startTime
+//            // Set default daterange label values at startup
+//            var startTimeString = getMonthName(timeSlider.getCurrentTimeExtent().startTime.getUTCMonth()) + ", " + timeSlider.getCurrentTimeExtent().startTime.getUTCFullYear();
+//            dom.byId("daterange").innerHTML = "<i>" + startTimeString +"<\/i>";
+//
+//            // Logic to change the daterange label values when the time changes
+//            timeSlider.on("time-extent-change", function(evt){
+//                // Re-calculate the startTimeString
+//                startTimeString = getMonthName(evt.startTime.getUTCMonth()) + ", " + evt.startTime.getUTCFullYear();
+//                // Place the new startTimeString in the 'daterange' DOM element
+//                dom.byId("daterange").innerHTML = "<i>" + startTimeString + "<\/i>";
+//            });
+
+            // *** Logic for timeSlider dynamic title - using both startTime and endTime
+            // Set default daterange label values at startup
+            var startTimeString = getMonthName(timeSlider.getCurrentTimeExtent().startTime.getUTCMonth()) + ", " + timeSlider.getCurrentTimeExtent().startTime.getUTCFullYear();
+            var startupEndValString = getMonthName(timeSlider.getCurrentTimeExtent().endTime.getUTCMonth()) + ", " + timeSlider.getCurrentTimeExtent().endTime.getUTCFullYear();
+            dom.byId("daterange").innerHTML = "<i>" + startTimeString + " to " + startupEndValString + "<\/i>";
+
+            // Logic to change the daterange label values when the time changes
+            timeSlider.on("time-extent-change", function(evt){
+                var startValString = getMonthName(evt.startTime.getUTCMonth()) + ", " + evt.startTime.getUTCFullYear();
+                var endValString = getMonthName(evt.endTime.getUTCMonth()) + ", " + evt.endTime.getUTCFullYear();
+                dom.byId("daterange").innerHTML = "<i>" + startValString + " to " + endValString + "<\/i>";
+            });
+        }
+
+        // Toggle function for widget collapsing
+        function toggle(showHideDiv, switchTextDiv) {
+            var ele = document.getElementById(showHideDiv);
+            var text = document.getElementById(switchTextDiv);
+            if(ele.style.display == "block") {
+                ele.style.display = "none";
+                text.innerHTML = "Layers";
+            } else {
+                ele.style.display = "block";
+                text.innerHTML = "Hide Layers";
+            }
+        }
+
+        // Function to parse out title text from html element text
+        function getTitle(htmlTitle) {
+            var title ='';
+            var parser = new DOMParser();
+            var titleDom = parser.parseFromString(htmlTitle, 'text/html');
+            var titleElement = titleDom.getElementsByClassName('sectionTitle');
+            if (titleElement[0]) {
+                title = titleElement[0].innerHTML;
+            }
+            return title;
+        }
+
+        // Function to determine if a section passed contains a group value
+            // Returns true if the section has the group value
+            // Return false if the section does not have the group value
+        function sectionInGroup(htmlTitle, group) {
+            var parser = new DOMParser();
+            var titleDom = parser.parseFromString(htmlTitle, 'text/html');
+            var titleElement = titleDom.getElementsByClassName(group);
+            if (titleElement[0]) {
+                return true;
+            }
+            return false;
+        }
+
+        function getUrlVar(name)
+        {
+            var vars = [], hash;
+            if( window.location.href.indexOf('?') == -1 ) return null;
+
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(var i = 0; i < hashes.length; i++){
+                hash = hashes[i].split('=');
+                hash[0] = hash[0].split('#')[0];
+                vars.push(hash[0]);
+                vars[hash[0]] = (hash[1] === undefined) ? true : decodeURIComponent(hash[1]);
+            }
+            return vars[name];
+        }
+
+        // Function used by the app to determine which sections are loaded.
+        // This function stores the final sections in the searchBoxFilter store for search functionality
+        // DEPENDENCY: searchBoxFilter established
+        function filterSections(filter, byTitle)
+        {
+            // Create a counter and start at zero
+            var counter = 0;
+            // Retrieve the sections from the story map
+            var sections = app.data.getStorySections();
+            // If a URL parameter to filter was provided...
+            if (filter){
+                // Declare variables to work with
+                var newSections = [];
+                var sectionTitle = "";
+
+                // Loop over each section
+                array.forEach(sections, lang.hitch(this, function(section){
+
+                    // Retrieve the section title and assign it to sectionTitle variable
+                    // NOTE: This will correspond to the section name
+                    sectionTitle = getTitle(section.title);
+
+                    // If byTitle is true and the filter (url section param name) equals the
+                    // sectionTitle (current section section name)
+                    if (byTitle && filter===sectionTitle){
+                        // Push the section to the newSections array
+                        newSections.push(section);
+                        // Push the title and current counter value to the searchBoxFilter data memory
+                        searchBoxFilter.store.data.push({
+                            name: sectionTitle,
+                            id: counter
+                        });
+                        // Increment the counter for the next section
+                        counter += 1;
+
+                    // If we want to filter by group...
+                    // Logic: If byTitle is false, the filter is a group, and the result of sectionInGroup is true
+                    } else if (!byTitle && sectionInGroup(section.title, filter)){
+                        // Push the section to the newSections array
+                        newSections.push(section);
+                        // Push the title and current counter value to the searchBoxFilter data memory
+                        searchBoxFilter.store.data.push({
+                            name: sectionTitle,
+                            id: counter
+                        });
+                        // Increment the counter for the next section
+                        counter += 1;
+                    }
+                }));
+                // Instantiate a variable to be the app data's getWebAppData result
+                var webAppData = app.data.getWebAppData();
+                // Set the story sections using the newSections array
+                webAppData.setStorySections(newSections);
+                // Refresh the story map sections
+                topic.publish("story-update-sections");
+                // Return true as the final function result
+                return true;
+
+            // If the URL does not contain a filter and byTitle is false
+            // Note: This is the default behavior if no filter URL var is passed!
+            } else if (byTitle === false){
+                // Loop over each section
+                array.forEach(sections, lang.hitch(this, function(section){
+                    // Get the section title
+                    sectionTitle = getTitle(section.title);
+                    // Push the title and current counter value to the searchBoxFilter data memory
+                    searchBoxFilter.store.data.push({
+                        name: sectionTitle,
+                        id: counter
+                    });
+                    counter += 1;
+                }));
+            }
+            return false;
+        }
+
+        // Function to return a month name
+        function getMonthName(monthIndex){
+            var monthNames = [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
+            ];
+
+            return monthNames[monthIndex];
+        }
+
+        // Function to find key in associative array
+        function arraySearch(arr,val) {
+            for (var i=0; i<arr.length; i++)
+                if (arr[i] === val)
+                    return i;
+            return false;
+        }
+
+        // Function to search for a key in a dictionary given a value
+        function dictKeySearch(dictionary, search_val){
+            for (var key in dictionary){
+                for (var subkey in dictionary[key]) {
+                    if (search_val in dictionary[key][subkey]){
+                        return key;
+                    }
+                }
+            }
+        }
+
+    });
+</script>
+
+<div id="app.map.container.firstChild.id">
+
+    <!--<div id="searchWidget"></div>-->
+
+    <div style="position:absolute; right:90px; top:10px; z-Index:999;">
+        <div data-dojo-type="dijit/TitlePane"
+             data-dojo-props="title:'Switch Basemap', closable:false, open:false">
+            <div id="basemapGalleryHolder" data-dojo-type="dijit/layout/ContentPane" style="width:380px; height:280px; overflow:auto;">
+                <div id="basemapGallery"></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="position:absolute; right:20px; top:10px; z-Index:999;">
+        <div data-dojo-type="dijit/TitlePane"
+             data-dojo-props="title:'Layers', closable:false, open:false">
+            <div data-dojo-type="dijit/layout/ContentPane" style="width:380px; height:280px; overflow:auto;">
+                <div id="layerListPane" style="width:400px"></div>
+            </div>
+        </div>
+    </div>
+
+    <!--&lt;!&ndash; Element to contain the layer list button &ndash;&gt;-->
+    <!--<div class="layerListContainer">-->
+        <!--<button id="layersBtn" type="button" class="btn btn-info" data-toggle="collapse" data-target="#layerListPane">Layers</button>-->
+    <!--</div>-->
+
+    <!--&lt;!&ndash; Element to contain the layer list widget, once expanded by clicking the button &ndash;&gt;-->
+    <!--<div id="layerListPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="group:'right'" class="collapse">-->
+    <!--</div>-->
+
+    <!-- Element to contain a bottom panel that will hold the timeSlider, once a time-enabled layer is toggled on -->
+    <div id="bottomPanel">
+    </div>
+</div>
+
+
+<!-- JS logic to handle clicking of the LayersBtn to expand the layer list widget -->
+<!-- (Had to be moved outside of main script section after troubleshooting -->
+<!--<script>-->
+
+    <!--$("#layersBtn").click(function(){-->
+        <!--if ($("#layerListPane").is(":visible")){-->
+            <!--$("#layerListPane").hide();-->
+            <!--$("#layersBtn").text("Layers");-->
+
+        <!--} else {-->
+            <!--$("#layerListPane").show();-->
+            <!--$("#layersBtn").text("Hide");-->
+        <!--}-->
+    <!--});-->
+
+<!--</script>-->
+
+<!--<script>-->
+    <!--$(document).ready(function() {-->
+
+        <!--$('a').on('click touchend', function(e) {-->
+            <!--var el = $(this);-->
+            <!--var link = el.attr('href');-->
+            <!--window.location = link;-->
+        <!--});-->
+
+    <!--});-->
+<!--</script>-->
+
+</body>
+</html>

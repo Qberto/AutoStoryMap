@@ -1,0 +1,28 @@
+>>>>>     PORTAL/ARCGIS SERVER CONFIGURATION     <<<<<
+portal: https://my.portal.com/arcgis
+AppID: 
+WebMapID: 
+
+
+
+
+>>>>>     AGOL CONFIGURATION     <<<<<
+portal: https://my.organization.arcgis.com
+
+AppID:  
+webmap=
+
+
+>>>>>     LOCAL CONFIGURATION     <<<<<
+
+--- Version 1 ---
+
+MapDocument: C:\path\to\my\publishing\map\document\PublishingMapDocument.mxd
+
+Group Layer Name: "Group Layer Name"
+
+POI Layer Name: "POI"
+
+AOI Layer Name: "AOI"
+
+Description Field Name: "DESCRIPTION"
